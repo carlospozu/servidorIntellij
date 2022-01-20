@@ -1,8 +1,6 @@
 package com.example.demo
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class PokemonController {
@@ -28,11 +26,25 @@ class PokemonController {
         return PokemonRepository.listaPokemon
     }
 
-    @GetMapping("seleccionarPokemonFavorito/{id}")
+    @GetMapping("pokemon/{id}")
     fun getPokemonFavorito(@PathVariable id: Int) : String {
-        if (id < PokemonRepository.listaPokemon.size)
-            return PokemonRepository.listaPokemon[id].toString()
+        return if (id < PokemonRepository.listaPokemon.size)
+            PokemonRepository.listaPokemon[id].toString()
         else
-            return "Ese Pokemon no existe"
+            "Ese Pokemon no existe"
+    }
+
+    @DeleteMapping("pokemon/{id}")
+    fun deletePokemon(@PathVariable id: Int) : Boolean {
+        return if (id < PokemonRepository.listaPokemon.size) {
+            PokemonRepository.listaPokemon.removeAt(id)
+            true
+        } else
+            false
+    }
+
+    @PatchMapping("pokemon/{nombre}/{nivel}")
+    fun anadirPokemon(@PathVariable nombre: String, @PathVariable nivel: Int) {
+        PokemonRepository.listaPokemon.add(Pokemon(nombre, nivel))
     }
 }
