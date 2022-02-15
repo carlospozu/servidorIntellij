@@ -10,29 +10,24 @@ class PreguntaController(private val usuariosRepository: UsuariosRepository) {
 
     @GetMapping("getPregunta/{token}")
     fun enviarPregunta(@PathVariable token: String): String {
-        var pregunta = ""
         val usuario = usuariosRepository.getById(encontrarUsuario(token))
         if (usuario.idrepe.size==0)
             return "No quedan preguntas"
         val numPregunta = usuario.idrepe[Random.nextInt(0, usuario.idrepe.size)]
         var i = 0
         var salir = false
+
         do {
             if (PreguntaRepository.listaPreguntas[i].id == numPregunta){
                 salir = true
                 usuario.idrepe.remove(numPregunta)
                 usuariosRepository.save(usuario)
+
             } else
                 i++
         } while (!salir && i < PreguntaRepository.listaPreguntas.size)
-
-        val hola=(0 until PreguntaRepository.listaPreguntas.size).random()
         var gson = Gson()
-        return gson.toJson(PreguntaRepository.listaPreguntas[hola])
-
-
-/* "Pregunta: "+PreguntaRepository.listaPreguntas[hola].nombre+" Respuesta 1: "+PreguntaRepository.listaPreguntas[hola].respuesta1+" Respuesta 2: "+PreguntaRepository.listaPreguntas[hola].respuesta2+" Respuesta 3: "+PreguntaRepository.listaPreguntas[hola].respuesta3+" Respuesta 4: "+PreguntaRepository.listaPreguntas[hola].respuesta4+" id: "+PreguntaRepository.listaPreguntas[hola].id
-    */
+        return gson.toJson(PreguntaRepository.listaPreguntas[numPregunta])
     }
 
 
